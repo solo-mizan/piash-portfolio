@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Piash Islam Abir</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --neon:#7c6bff;--neon2:#a78bfa;--neon3:#38bdf8;
+  --bg:#050810;--bg2:#0a0f1e;--bg3:#0d1530;
+  --glass:rgba(255,255,255,0.04);--glass-border:rgba(255,255,255,0.08);
+  --text:#e2e8f0;--muted:#94a3b8;--accent:#7c6bff;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;overflow-x:hidden}
+#canvas{position:fixed;top:0;left:0;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(5,8,16,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+.logo{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,var(--neon),var(--neon3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:1.5rem;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.85rem;letter-spacing:.05em;transition:color .3s}
+.nav-links a:hover{color:var(--neon2)}
+
+/* SECTIONS */
+section{position:relative;z-index:1;padding:6rem 2rem;max-width:1100px;margin:0 auto}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:80px;max-width:100%;flex-direction:column}
+.hero-inner{position:relative}
+.profile-ring{width:160px;height:160px;margin:0 auto 2rem;position:relative}
+.profile-ring::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(var(--neon),var(--neon3),var(--neon2),var(--neon));animation:spin 4s linear infinite}
+.profile-ring::after{content:'';position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(var(--neon3),var(--neon),var(--neon2),var(--neon3));animation:spin 4s linear infinite reverse;opacity:.4}
+.profile-img{position:relative;z-index:1;width:152px;height:152px;border-radius:50%;background:linear-gradient(135deg,#1e1b4b,#1e3a5f);border:3px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:3.5rem;margin:4px auto;transition:transform .4s;cursor:default}
+.profile-img:hover{transform:scale(1.05) rotate(-3deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:999px;padding:.35rem 1rem;font-size:.78rem;color:var(--neon2);margin-bottom:1rem;letter-spacing:.08em}
+.hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--neon3);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(56,189,248,.5)}50%{opacity:.7;box-shadow:0 0 0 6px rgba(56,189,248,0)}}
+h1.hero-name{font-size:clamp(2.5rem,6vw,5rem);font-weight:800;line-height:1.1;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 30%,var(--neon2) 60%,var(--neon3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+.hero-title{font-size:clamp(.9rem,2vw,1.15rem);color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:2rem}
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn{padding:.65rem 1.8rem;border-radius:999px;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-block}
+.btn-primary{background:linear-gradient(135deg,var(--neon),var(--neon3));color:#fff;border:none;box-shadow:0 0 20px rgba(124,107,255,.4)}
+.btn-primary:hover{box-shadow:0 0 35px rgba(124,107,255,.7);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--neon2);border:1px solid var(--neon2)}
+.btn-outline:hover{background:rgba(124,107,255,.1);transform:translateY(-2px)}
+
+/* SECTION TITLES */
+.sec-title{text-align:center;margin-bottom:3.5rem}
+.sec-label{font-size:.75rem;letter-spacing:.2em;color:var(--neon);text-transform:uppercase;margin-bottom:.5rem}
+.sec-heading{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;background:linear-gradient(135deg,#fff,var(--muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sec-line{width:60px;height:2px;background:linear-gradient(90deg,var(--neon),var(--neon3));margin:1rem auto 0;border-radius:99px}
+
+/* REVEAL ANIMATION */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
+.about-text p{color:var(--muted);line-height:1.9;margin-bottom:1rem;font-size:.95rem}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.stat-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:1.2rem;text-align:center;transition:border-color .3s,transform .3s}
+.stat-card:hover{border-color:var(--neon);transform:translateY(-4px)}
+.stat-num{font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--neon),var(--neon3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:.78rem;color:var(--muted);margin-top:.25rem;text-transform:uppercase;letter-spacing:.08em}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:2rem}
+.timeline-track{position:absolute;left:.6rem;top:0;bottom:0;width:2px;background:var(--glass-border);border-radius:99px;overflow:hidden}
+.timeline-fill{width:100%;background:linear-gradient(180deg,var(--neon3),var(--neon),var(--neon2));transform-origin:top;transform:scaleY(0);transition:transform .1s}
+.tl-item{position:relative;padding:0 0 2.5rem 2.5rem;opacity:0;transform:translateX(-20px);transition:all .7s ease}
+.tl-item.visible{opacity:1;transform:translateX(0)}
+.tl-dot{position:absolute;left:-1.5rem;top:.4rem;width:20px;height:20px;border-radius:50%;background:var(--bg2);border:2px solid var(--glass-border);transition:all .4s;display:flex;align-items:center;justify-content:center}
+.tl-item.active .tl-dot{border-color:var(--neon);box-shadow:0 0 14px var(--neon),0 0 28px rgba(124,107,255,.3);background:var(--neon)}
+.tl-dot-inner{width:6px;height:6px;border-radius:50%;background:#fff;opacity:0;transition:opacity .4s}
+.tl-item.active .tl-dot-inner{opacity:1}
+.tl-content{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:1.2rem 1.5rem;transition:border-color .4s}
+.tl-item.active .tl-content{border-color:rgba(124,107,255,.4)}
+.tl-year{font-size:.75rem;color:var(--neon);letter-spacing:.1em;margin-bottom:.3rem;font-weight:600}
+.tl-school{font-size:1.05rem;font-weight:700;color:#fff;margin-bottom:.2rem}
+.tl-degree{font-size:.85rem;color:var(--muted)}
+.tl-tag{display:inline-block;margin-top:.6rem;padding:.2rem .7rem;border-radius:999px;font-size:.7rem;font-weight:600;letter-spacing:.06em}
+.tag-current{background:rgba(56,189,248,.15);color:var(--neon3);border:1px solid rgba(56,189,248,.3)}
+.tag-done{background:rgba(124,107,255,.1);color:var(--neon2);border:1px solid rgba(124,107,255,.2)}
+
+/* PROFESSIONAL */
+.pro-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:24px;padding:2.5rem;position:relative;overflow:hidden;transition:all .4s;cursor:default}
+.pro-card::before{content:'';position:absolute;inset:0;background:radial-gradient(600px circle at var(--mx,50%) var(--my,50%),rgba(124,107,255,.08),transparent 50%);pointer-events:none}
+.pro-card:hover{border-color:rgba(124,107,255,.4);transform:translateY(-6px)}
+.pro-top{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem}
+.pro-icon{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,rgba(124,107,255,.3),rgba(56,189,248,.3));border:1px solid rgba(124,107,255,.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.pro-role{font-size:1.5rem;font-weight:800;background:linear-gradient(135deg,#fff,var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pro-company{font-size:1rem;color:var(--neon3);font-weight:600}
+.pro-desc{color:var(--muted);line-height:1.8;font-size:.93rem}
+.pro-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem}
+.pro-tag{padding:.3rem .9rem;border-radius:999px;font-size:.75rem;font-weight:600;background:rgba(124,107,255,.1);color:var(--neon2);border:1px solid rgba(124,107,255,.2)}
+
+/* INTERESTS */
+.interests-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.2rem}
+.interest-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;padding:1.8rem;text-align:center;transition:all .4s;cursor:default;position:relative;overflow:hidden}
+.interest-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .4s}
+.interest-card:hover{transform:translateY(-8px) scale(1.02);border-color:var(--card-color,var(--neon))}
+.interest-card:hover::after{opacity:1}
+.interest-icon{font-size:2.5rem;margin-bottom:1rem;display:block;transition:transform .4s}
+.interest-card:hover .interest-icon{transform:scale(1.15) rotate(-5deg)}
+.interest-name{font-size:.95rem;font-weight:600;color:#fff}
+.interest-desc{font-size:.78rem;color:var(--muted);margin-top:.3rem}
+
+/* CONTACT */
+.contact-inner{display:flex;flex-direction:column;align-items:center;gap:2rem}
+.contact-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:24px;padding:2rem 3rem;text-align:center;min-width:300px;transition:all .4s}
+.contact-card:hover{border-color:rgba(56,189,248,.4);transform:translateY(-4px)}
+.contact-label{font-size:.75rem;letter-spacing:.15em;color:var(--neon);text-transform:uppercase;margin-bottom:.5rem}
+.contact-num{font-size:1.6rem;font-weight:700;color:#fff;letter-spacing:.05em;margin-bottom:1rem}
+.copy-btn{background:linear-gradient(135deg,var(--neon),var(--neon3));color:#fff;border:none;border-radius:999px;padding:.55rem 1.5rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .3s}
+.copy-btn:hover{opacity:.85;transform:scale(1.05)}
+.copied{background:linear-gradient(135deg,#10b981,#06b6d4)!important}
+.social-row{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.soc-pill{background:var(--glass);border:1px solid var(--glass-border);border-radius:999px;padding:.55rem 1.4rem;font-size:.85rem;color:var(--muted);cursor:pointer;transition:all .3s}
+.soc-pill:hover{border-color:var(--neon2);color:var(--neon2);transform:translateY(-2px)}
+
+/* FOOTER */
+footer{text-align:center;padding:2.5rem;border-top:1px solid var(--glass-border);position:relative;z-index:1}
+.footer-text{color:var(--muted);font-size:.85rem;line-height:1.8}
+.footer-text span{background:linear-gradient(135deg,var(--neon),var(--neon3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600}
+
+/* PHOTOS */
+.photos-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:280px 280px;gap:1.2rem}
+.photo-card{border-radius:20px;overflow:hidden;position:relative;cursor:pointer;border:1px solid var(--glass-border);transition:transform .4s,border-color .4s}
+.photo-card.large{grid-row:span 2}
+.photo-card:hover{transform:scale(1.02);border-color:rgba(124,107,255,.5)}
+.photo-placeholder{width:100%;height:100%;background:linear-gradient(135deg,var(--bg2),var(--bg3));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem}
+.photo-icon{font-size:2.5rem;opacity:.4}
+.photo-hint{font-size:.78rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;opacity:.6}
+.photo-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,8,16,.9) 0%,transparent 50%);opacity:0;transition:opacity .4s;display:flex;align-items:flex-end;padding:1.2rem}
+.photo-overlay span{color:#fff;font-weight:600;font-size:.95rem;letter-spacing:.05em}
+.photo-card:hover .photo-overlay{opacity:1}
+@media(max-width:600px){.photos-grid{grid-template-columns:1fr;grid-template-rows:auto}.photo-card.large{grid-row:span 1}.photo-card{height:220px}}
+
+/* SOCIAL PILL LINK */
+.soc-pill{text-decoration:none;display:inline-block}
+
+/* HERO BADGE hidden */
+.hero-badge{display:none}
+
+
+#scrollTop{position:fixed;bottom:2rem;right:2rem;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--neon),var(--neon3));border:none;color:#fff;font-size:1.2rem;cursor:pointer;z-index:100;opacity:0;transform:translateY(10px);transition:all .3s;display:flex;align-items:center;justify-content:center}
+#scrollTop.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:700px){
+  .about-grid{grid-template-columns:1fr}
+  section{padding:5rem 1.2rem}
+  nav{padding:.8rem 1.2rem}
+  .nav-links{gap:1rem}
+}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<nav>
+  <div class="logo">PIA</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#journey">Journey</a></li>
+    <li><a href="#professional">Work</a></li>
+    <li><a href="#interests">Interests</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner reveal">
+    <div class="profile-ring">
+      <div class="profile-img">🧑‍💻</div>
+    </div>
+    <h1 class="hero-name">Piash Islam Abir</h1>
+    <p class="hero-title">CEO &nbsp;·&nbsp; Tech Enthusiast &nbsp;·&nbsp; Explorer</p>
+    <div class="hero-cta">
+      <a href="#professional" class="btn btn-primary">My Work</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-title reveal">
+    <p class="sec-label">Who I Am</p>
+    <h2 class="sec-heading">About Me</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>I'm <strong style="color:#fff">Piash Islam Abir</strong>, a passionate tech leader, entrepreneur, and lifelong explorer. With a background in Computer Science and Engineering, I've channelled my curiosity into building solutions that matter.</p>
+      <p>As CEO of <strong style="color:var(--neon3)">RS BD Screens</strong>, I lead a growing team dedicated to pushing the boundaries of technology in Bangladesh. Beyond the office, you'll find me on a bike, strumming my guitar, or mapping my next adventure.</p>
+      <p>I believe in growing every single day — academically, professionally, and personally.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card"><div class="stat-num">4+</div><div class="stat-label">Years in Tech</div></div>
+      <div class="stat-card"><div class="stat-num">1</div><div class="stat-label">Company Led</div></div>
+      <div class="stat-card"><div class="stat-num">∞</div><div class="stat-label">Curiosity</div></div>
+      <div class="stat-card"><div class="stat-num">360°</div><div class="stat-label">Thinker</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACADEMIC JOURNEY -->
+<section id="journey" style="max-width:700px">
+  <div class="sec-title reveal">
+    <p class="sec-label">The Path So Far</p>
+    <h2 class="sec-heading">Academic Journey</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="timeline reveal">
+    <div class="timeline-track"><div class="timeline-fill" id="tlFill"></div></div>
+
+    <div class="tl-item" data-delay="0">
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-year">CURRENT · BACHELOR'S</div>
+        <div class="tl-school">University of Scholars</div>
+        <div class="tl-degree">B.Sc in Computer Science &amp; Engineering</div>
+        <span class="tl-tag tag-current">In Progress</span>
+      </div>
+    </div>
+
+    <div class="tl-item" data-delay="150">
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-year">DIPLOMA IN ENGINEERING</div>
+        <div class="tl-school">Bogura Polytechnic Institute</div>
+        <div class="tl-degree">Diploma in Engineering</div>
+        <span class="tl-tag tag-done">Completed</span>
+      </div>
+    </div>
+
+    <div class="tl-item" data-delay="300">
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-year">SECONDARY EDUCATION</div>
+        <div class="tl-school">Kaligram Rathindranath High School</div>
+        <div class="tl-degree">Secondary School Certificate</div>
+        <span class="tl-tag tag-done">Completed</span>
+      </div>
+    </div>
+
+    <div class="tl-item" data-delay="450">
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-year">PRIMARY FOUNDATION</div>
+        <div class="tl-school">Patisar Govt. Primary School</div>
+        <div class="tl-degree">Where the journey began</div>
+        <span class="tl-tag tag-done">Completed</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFESSIONAL -->
+<section id="professional">
+  <div class="sec-title reveal">
+    <p class="sec-label">What I Do</p>
+    <h2 class="sec-heading">Professional</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="pro-card reveal" id="proCard">
+    <div class="pro-top">
+      <div class="pro-icon">🖥️</div>
+      <div>
+        <div class="pro-role">Chief Executive Officer</div>
+        <div class="pro-company">RS BD Screens</div>
+      </div>
+    </div>
+    <p class="pro-desc">Leading RS BD Screens as CEO — driving strategy, innovation, and growth in the technology and display solutions space in Bangladesh. Committed to building a culture of excellence, empowering the team to deliver products and services that make a real difference.</p>
+    <div class="pro-tags">
+      <span class="pro-tag">Leadership</span>
+      <span class="pro-tag">Strategy</span>
+      <span class="pro-tag">Technology</span>
+      <span class="pro-tag">Innovation</span>
+      <span class="pro-tag">Business Growth</span>
+    </div>
+  </div>
+</section>
+
+<!-- INTERESTS -->
+<section id="interests">
+  <div class="sec-title reveal">
+    <p class="sec-label">Beyond Work</p>
+    <h2 class="sec-heading">Interests</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="interests-grid reveal">
+    <div class="interest-card" style="--card-color:rgba(124,107,255,.5)">
+      <span class="interest-icon">👥</span>
+      <div class="interest-name">Friends &amp; Social</div>
+      <div class="interest-desc">Building bonds, sharing moments</div>
+    </div>
+    <div class="interest-card" style="--card-color:rgba(56,189,248,.5)">
+      <span class="interest-icon">🏍️</span>
+      <div class="interest-name">Bike Riding</div>
+      <div class="interest-desc">Freedom on two wheels</div>
+    </div>
+    <div class="interest-card" style="--card-color:rgba(167,139,250,.5)">
+      <span class="interest-icon">🎸</span>
+      <div class="interest-name">Guitar &amp; Singing</div>
+      <div class="interest-desc">Music as a way of life</div>
+    </div>
+    <div class="interest-card" style="--card-color:rgba(16,185,129,.5)">
+      <span class="interest-icon">✈️</span>
+      <div class="interest-name">Traveling</div>
+      <div class="interest-desc">Exploring the world, one place at a time</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTOS -->
+<section id="photos">
+  <div class="sec-title reveal">
+    <p class="sec-label">Moments</p>
+    <h2 class="sec-heading">Gallery</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="photos-grid reveal">
+    <div class="photo-card large">
+      <div class="photo-placeholder">
+        <span class="photo-icon">📷</span>
+        <span class="photo-hint">Photo 1</span>
+      </div>
+      <div class="photo-overlay"><span>Piash</span></div>
+    </div>
+    <div class="photo-card">
+      <div class="photo-placeholder">
+        <span class="photo-icon">📷</span>
+        <span class="photo-hint">Photo 2</span>
+      </div>
+      <div class="photo-overlay"><span>Moments</span></div>
+    </div>
+    <div class="photo-card">
+      <div class="photo-placeholder">
+        <span class="photo-icon">📷</span>
+        <span class="photo-hint">Photo 3</span>
+      </div>
+      <div class="photo-overlay"><span>Adventures</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="sec-title reveal">
+    <p class="sec-label">Say Hello</p>
+    <h2 class="sec-heading">Contact</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="contact-inner reveal">
+    <div class="contact-card">
+      <div class="contact-label">Phone / WhatsApp</div>
+      <div class="contact-num">+880 1703 030606</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyPhone()">Copy Number</button>
+    </div>
+    <div class="social-row">
+      <a href="https://facebook.com" target="_blank" class="soc-pill">🔵 Facebook</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-text">
+    Crafted with <span>care</span> by <a href="https://mizanur.tech" target="_blank" style="background:linear-gradient(135deg,var(--neon),var(--neon3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:600;text-decoration:none">Mizan</a> for <span>Piash</span><br>
+    <span style="font-size:.78rem;color:var(--muted);-webkit-text-fill-color:var(--muted);font-weight:400;background:none">© 2025 Piash Islam Abir. All rights reserved.</span>
+  </p>
+</footer>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+/* ── PARTICLES ── */
+const cvs=document.getElementById('canvas'),ctx=cvs.getContext('2d');
+let W,H,pts=[];
+function resize(){W=cvs.width=innerWidth;H=cvs.height=innerHeight}
+resize();window.addEventListener('resize',resize);
+for(let i=0;i<80;i++)pts.push({x:Math.random()*1920,y:Math.random()*1080,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,o:Math.random()*.5+.1});
+let mx=0,my=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+function drawPts(){
+  ctx.clearRect(0,0,W,H);
+  pts.forEach((p,i)=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(124,107,255,${p.o})`;ctx.fill();
+    pts.forEach((p2,j)=>{if(j<=i)return;const dx=p.x-p2.x,dy=p.y-p2.y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=`rgba(124,107,255,${.12*(1-d/120)})`;ctx.lineWidth=.5;ctx.stroke()}});
+  });
+  requestAnimationFrame(drawPts);
+}
+drawPts();
+
+/* ── PARALLAX HERO ── */
+document.addEventListener('mousemove',e=>{
+  const hero=document.querySelector('.hero-inner');
+  const dx=(e.clientX/innerWidth-.5)*20,dy=(e.clientY/innerHeight-.5)*12;
+  hero.style.transform=`translate(${dx}px,${dy}px)`;
+});
+
+/* ── PRO CARD SPOTLIGHT ── */
+const pc=document.getElementById('proCard');
+pc.addEventListener('mousemove',e=>{
+  const r=pc.getBoundingClientRect();
+  pc.style.setProperty('--mx',`${e.clientX-r.left}px`);
+  pc.style.setProperty('--my',`${e.clientY-r.top}px`);
+});
+
+/* ── REVEAL ON SCROLL ── */
+const revealEls=document.querySelectorAll('.reveal');
+const tlItems=document.querySelectorAll('.tl-item');
+const tlFill=document.getElementById('tlFill');
+const tlSection=document.getElementById('journey');
+
+function onScroll(){
+  revealEls.forEach(el=>{
+    const top=el.getBoundingClientRect().top;
+    if(top<innerHeight*.88)el.classList.add('visible');
+  });
+  tlItems.forEach((el,i)=>{
+    const top=el.getBoundingClientRect().top;
+    setTimeout(()=>{
+      if(top<innerHeight*.85){
+        el.classList.add('visible');
+        if(i===0)el.classList.add('active');
+      }
+    },el.dataset.delay||0);
+  });
+
+  /* timeline fill */
+  const tlRect=tlSection.getBoundingClientRect();
+  const prog=Math.max(0,Math.min(1,(innerHeight*.5-tlRect.top)/tlRect.height));
+  tlFill.style.transform=`scaleY(${prog})`;
+
+  /* scroll top btn */
+  document.getElementById('scrollTop').classList.toggle('show',scrollY>400);
+}
+window.addEventListener('scroll',onScroll,{passive:true});
+onScroll();
+
+/* ── COPY PHONE ── */
+function copyPhone(){
+  navigator.clipboard.writeText('+8801703030606').then(()=>{
+    const btn=document.getElementById('copyBtn');
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy Number';btn.classList.remove('copied')},2000);
+  });
+}
+</script>
+</body>
+</html>
